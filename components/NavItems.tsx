@@ -10,7 +10,7 @@ const NavItems = ({ handleClick }: { handleClick?: () => void }) => {
   const handleLogout = async () => {
     await logoutUser();
     navigate("/sign-in");
-  }
+  };
 
   return (
     <section className="nav-items">
@@ -46,16 +46,14 @@ const NavItems = ({ handleClick }: { handleClick?: () => void }) => {
           <img
             src={user?.imageUrl || "/assets/images/david.webp"}
             alt={user?.name || "David"}
+            referrerPolicy="no-referrer"
           />
           <article>
             <h2>{user?.name}</h2>
             <p>{user?.email}</p>
           </article>
 
-          <button
-            onClick={handleLogout}
-            className="cursor-pointer"
-          >
+          <button onClick={handleLogout} className="cursor-pointer">
             <img
               src="/assets/icons/logout.svg"
               alt="logout"
