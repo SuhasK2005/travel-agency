@@ -1,5 +1,4 @@
 import { type RouteConfig, layout, route } from "@react-router/dev/routes";
-import { routes } from "virtual:react-router/server-build";
 
 export default [
   route('sign-in', 'routes/root/sign-in.tsx'),
