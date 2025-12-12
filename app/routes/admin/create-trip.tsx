@@ -66,6 +66,18 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
               }}
             />
           </div>
+
+          <div>
+            <label htmlFor="duration">Duration</label>
+            <input
+              id="duration"
+              name="duration"
+              type="number"
+              placeholder="Enter the number of days"
+              className="form-input placeholder:text-gray-100"
+              onChange={(e) => handleChange("duration", Number(e.target.value))}
+            />
+          </div>
         </form>
       </section>
     </main>
