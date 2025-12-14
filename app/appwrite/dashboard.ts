@@ -69,96 +69,95 @@ export const getUserAndTripStat = async (): Promise<DashboardStats> => {
       ),
     },
 
-     totalTrips: trips.total,
-        tripsCreated: {
-            currentMonth: filterByDate(
-                trips.documents,
-                'createdAt',
-                startCurrent,
-                undefined
-            ),
-            lastMonth: filterByDate(
-                filterUsersByRole('user'),
-                'joinedAt',
-                startPrev,
-                endPrev
-            )
-        },
+    totalTrips: trips.total,
+    tripsCreated: {
+      currentMonth: filterByDate(
+        trips.documents,
+        "createdAt",
+        startCurrent,
+        undefined
+      ),
+      lastMonth: filterByDate(
+        filterUsersByRole("user"),
+        "joinedAt",
+        startPrev,
+        endPrev
+      ),
+    },
   };
 };
 
-
 export const getUserGrowthPerDay = async () => {
-    const users = await database.listDocuments(
-        appwriteConfig.databaseId,
-        appwriteConfig.usersCollectionId
-    );
+  const users = await database.listDocuments(
+    appwriteConfig.databaseId,
+    appwriteConfig.usersCollectionId
+  );
 
-    const userGrowth = users.documents.reduce(
-        (acc: { [key: string]: number }, user: Document) => {
-            const date = new Date(user.joinedAt);
-            const day = date.toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-            });
-            acc[day] = (acc[day] || 0) + 1;
-            return acc;
-        },
-        {}
-    );
+  const userGrowth = users.documents.reduce(
+    (acc: { [key: string]: number }, user: Document) => {
+      const date = new Date(user.joinedAt);
+      const day = date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+      acc[day] = (acc[day] || 0) + 1;
+      return acc;
+    },
+    {}
+  );
 
-    return Object.entries(userGrowth).map(([day, count]) => ({
-        count: Number(count),
-        day,
-    }));
+  return Object.entries(userGrowth).map(([day, count]) => ({
+    count: Number(count),
+    day,
+  }));
 };
 
 export const getTripsCreatedPerDay = async () => {
-    const trips = await database.listDocuments(
-        appwriteConfig.databaseId,
-        appwriteConfig.tripsCollectionId
-    );
+  const trips = await database.listDocuments(
+    appwriteConfig.databaseId,
+    appwriteConfig.tripsCollectionId
+  );
 
-    const tripsGrowth = trips.documents.reduce(
-        (acc: { [key: string]: number }, trip: Document) => {
-            const date = new Date(trip.createdAt);
-            const day = date.toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-            });
-            acc[day] = (acc[day] || 0) + 1;
-            return acc;
-        },
-        {}
-    );
+  const tripsGrowth = trips.documents.reduce(
+    (acc: { [key: string]: number }, trip: Document) => {
+      const date = new Date(trip.createdAt);
+      const day = date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+      acc[day] = (acc[day] || 0) + 1;
+      return acc;
+    },
+    {}
+  );
 
-    return Object.entries(tripsGrowth).map(([day, count]) => ({
-        count: Number(count),
-        day,
-    }));
+  return Object.entries(tripsGrowth).map(([day, count]) => ({
+    count: Number(count),
+    day,
+  }));
 };
 
 export const getTripsByTravelStyle = async () => {
-    const trips = await database.listDocuments(
-        appwriteConfig.databaseId,
-        appwriteConfig.tripsCollectionId
-    );
+  const trips = await database.listDocuments(
+    appwriteConfig.databaseId,
+    appwriteConfig.tripsCollectionId
+  );
 
-    const travelStyleCounts = trips.documents.reduce(
-        (acc: { [key: string]: number }, trip: Document) => {
-            const tripDetail = parseTripData(trip.tripDetails);
+  const travelStyleCounts = trips.documents.reduce(
+    (acc: { [key: string]: number }, trip: Document) => {
+      const tripDetail = parseTripData(trip.tripDetail);
 
-            if (tripDetail && tripDetail.travelStyle) {
-                const travelStyle = tripDetail.travelStyle;
-                acc[travelStyle] = (acc[travelStyle] || 0) + 1;
-            }
-            return acc;
-        },
-        {}
-    );
+      if (tripDetail && tripDetail.travelStyle) {
+        const travelStyle = tripDetail.travelStyle;
+        acc[travelStyle] = (acc[travelStyle] || 0) + 1;
+      }
+      return acc;
+    },
+    {}
+  );
 
-    return Object.entries(travelStyleCounts).map(([travelStyle, count]) => ({
-        count: Number(count),
-        travelStyle,
-    }));
+  return Object.entries(travelStyleCounts).map(([travelStyle, count]) => ({
+    count: Number(count),
+    travelStyle,
+  }));
 };
