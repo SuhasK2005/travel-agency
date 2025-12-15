@@ -93,8 +93,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
     );
 
- return data({ id: result.$id })
-    } catch (e) {
-        console.error('Error generating travel plan: ', e);
-    }
-}
+    return data({ id: result.$id });
+  } catch (e) {
+    console.error("Error generating travel plan: ", e);
+    return data(
+      { error: "Failed to generate trip", message: String(e) },
+      { status: 500 }
+    );
+  }
+};
