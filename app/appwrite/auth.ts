@@ -4,12 +4,33 @@ import { redirect } from "react-router";
 
 export const getExistingUser = async (id: string) => {
   try {
+    // Check cache first
+    const cached = sessionStorage.getItem(`user_${id}`);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      // Cache for 5 minutes
+      if (Date.now() - timestamp < 5 * 60 * 1000) {
+        return data;
+      }
+    }
+
     const { documents, total } = await database.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.usersCollectionId,
       [Query.equal("accountId", id)]
     );
-    return total > 0 ? documents[0] : null;
+
+    const user = total > 0 ? documents[0] : null;
+
+    // Cache the result
+    if (user) {
+      sessionStorage.setItem(
+        `user_${id}`,
+        JSON.stringify({ data: user, timestamp: Date.now() })
+      );
+    }
+
+    return user;
   } catch (error) {
     console.error("Error fetching user:", error);
     return null;

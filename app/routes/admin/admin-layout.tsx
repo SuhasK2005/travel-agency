@@ -18,8 +18,14 @@ export async function clientLoader() {
     }
 
     return existingUser?.$id ? existingUser : await storeUserData();
-  } catch (e) {
+  } catch (e: any) {
     console.log("Error in clientLoader", e);
+
+    // Clear stale cache on auth errors
+    if (e?.code === 401) {
+      sessionStorage.clear();
+    }
+
     return redirect("/sign-in");
   }
 }
