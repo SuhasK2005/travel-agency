@@ -114,12 +114,17 @@ const TravelPage = ({ loaderData }: Route.ComponentProps) => {
               </p>
             </article>
 
-            <Link to="#trips">
+            <Link to="/create-trip">
               <ButtonComponent
                 type="button"
                 className="button-class !h-11 !w-full md:!w-[240px]"
               >
-                <span className="p-16-semibold text-white">Get Started</span>
+                <img
+                  src="/assets/icons/magic-star.svg"
+                  alt="create"
+                  className="size-5"
+                />
+                <span className="p-16-semibold text-white">Create Trip</span>
               </ButtonComponent>
             </Link>
           </section>

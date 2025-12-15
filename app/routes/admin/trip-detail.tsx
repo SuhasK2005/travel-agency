@@ -166,7 +166,7 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
               <ul>
                 {dayPlan.activities.map((activity, index: number) => (
                   <li key={index}>
-                    <span className="flex-shring-0 p-18-semibold">
+                    <span className="flex-shrink-0 p-18-semibold">
                       {activity.time}
                     </span>
                     <p className="grow">{activity.description}</p>
