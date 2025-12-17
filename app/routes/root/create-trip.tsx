@@ -88,10 +88,23 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
 
       const result: CreateTripResponse = await response.json();
 
-      if (result?.id) navigate(`/travel/${result.id}`);
-      else console.error("Failed to generate a trip");
+      if (!response.ok) {
+        const errorMsg =
+          result.error || result.message || "Failed to generate trip";
+        console.error("API Error:", errorMsg, result);
+        setError(errorMsg);
+        return;
+      }
+
+      if (result?.id) {
+        navigate(`/travel/${result.id}`);
+      } else {
+        console.error("Failed to generate a trip - no ID returned", result);
+        setError("Failed to generate trip. Please try again.");
+      }
     } catch (error) {
       console.error("Error generating trip", error);
+      setError("Network error. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
