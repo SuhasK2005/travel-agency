@@ -16,11 +16,6 @@ export async function clientLoader() {
       existingUser = await getExistingUser(user.$id);
     }
 
-    // Redirect based on user status
-    if (existingUser?.status === "admin") {
-      return redirect("/dashboard");
-    }
-
     return redirect("/");
   } catch (error) {
     console.error("Error in auth callback:", error);
