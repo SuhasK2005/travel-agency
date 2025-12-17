@@ -35,9 +35,9 @@ const RootNavbar = () => {
           {user.status === "admin" && (
             <Link
               to="/dashboard"
-              className="text-base font-normal text-dark-100"
+              className="text-base font-semibold text-dark-100 hover:text-primary-500 transition-colors duration-200"
             >
-              Admin Panel
+              Dashboard
             </Link>
           )}
 
