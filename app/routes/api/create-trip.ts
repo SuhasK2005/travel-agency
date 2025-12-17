@@ -43,6 +43,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const genAI = new GoogleGenerativeAI(geminiKey);
 
   try {
+    console.log("Starting trip generation for:", {
+      country,
+      numberOfDays,
+      userId,
+    });
+
     const prompt = `Generate a ${numberOfDays}-day travel itinerary for ${country} based on the following user information:
         Budget: '${budget}'
         Interests: '${interests}'
@@ -90,21 +96,28 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         ]
     }`;
 
+    console.log("Calling Gemini API...");
     const textResult = await genAI
       .getGenerativeModel({ model: "gemini-2.5-flash" })
       .generateContent([prompt]);
 
+    console.log("Gemini response received, parsing...");
     const trip = parseMarkdownToJson(textResult.response.text());
+    console.log("Trip parsed successfully");
 
+    console.log("Fetching images from Unsplash...");
     const imageResponse = await fetch(
       `https://api.unsplash.com/search/photos?query=${country} ${interests} ${travelStyle}&client_id=${unsplashApiKey}`
     );
 
-    const imageUrls = (await imageResponse.json()).results
+    const imageData = await imageResponse.json();
+    const imageUrls = imageData.results
       .slice(0, 3)
       .map((result: any) => result.urls?.regular || null)
       .filter((url: string | null) => url !== null);
+    console.log("Images fetched:", imageUrls.length);
 
+    console.log("Saving to Appwrite database...");
     const result = await database.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.tripsCollectionId,
@@ -117,11 +130,22 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
     );
 
+    console.log("Trip saved successfully with ID:", result.$id);
     return data({ id: result.$id });
-  } catch (e) {
+  } catch (e: any) {
     console.error("Error generating travel plan: ", e);
+    console.error("Error details:", {
+      message: e.message,
+      code: e.code,
+      type: e.type,
+      stack: e.stack,
+    });
     return data(
-      { error: "Failed to generate trip", message: String(e) },
+      {
+        error: "Failed to generate trip",
+        message: e.message || String(e),
+        details: e.code || e.type || "Unknown error",
+      },
       { status: 500 }
     );
   }
