@@ -6,7 +6,10 @@ export async function clientLoader() {
   try {
     const user = await account.get();
 
-    if (!user.$id) return redirect("/sign-in");
+    if (!user.$id) {
+      window.location.replace("/sign-in");
+      return null;
+    }
 
     let existingUser = await getExistingUser(user.$id);
 
@@ -16,22 +19,17 @@ export async function clientLoader() {
       existingUser = await getExistingUser(user.$id);
     }
 
-    return redirect("/");
+    window.location.replace("/");
+    return null;
   } catch (error) {
     console.error("Error in auth callback:", error);
-    return redirect("/sign-in");
+    window.location.replace("/sign-in");
+    return null;
   }
 }
 
 const AuthCallback = () => {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <h2 className="text-2xl font-semibold mb-4">Signing you in...</h2>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
-      </div>
-    </div>
-  );
+  return null;
 };
 
 export default AuthCallback;
