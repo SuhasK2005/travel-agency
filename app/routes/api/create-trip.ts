@@ -15,8 +15,32 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     userId,
   } = await request.json();
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-  const unsplashApiKey = process.env.UNSPLASH_ACCESS_KEY!;
+  const geminiKey = process.env.GEMINI_API_KEY;
+  const unsplashApiKey = process.env.UNSPLASH_ACCESS_KEY;
+
+  if (!geminiKey) {
+    console.error("GEMINI_API_KEY is not set");
+    return data(
+      {
+        error: "Server configuration error",
+        message: "GEMINI_API_KEY not configured",
+      },
+      { status: 500 }
+    );
+  }
+
+  if (!unsplashApiKey) {
+    console.error("UNSPLASH_ACCESS_KEY is not set");
+    return data(
+      {
+        error: "Server configuration error",
+        message: "UNSPLASH_ACCESS_KEY not configured",
+      },
+      { status: 500 }
+    );
+  }
+
+  const genAI = new GoogleGenerativeAI(geminiKey);
 
   try {
     const prompt = `Generate a ${numberOfDays}-day travel itinerary for ${country} based on the following user information:
